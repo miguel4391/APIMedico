@@ -6,6 +6,7 @@ const helmet = require('helmet');
 const ipWhitelist = require('./middleware/ipWhitelist');
 const autenticar = require('./middleware/auth');
 const rateLimiter = require('./middleware/rateLimiter');
+const logAuditoria = require('./middleware/logAuditoria');
 
 const app = express();
 
@@ -15,6 +16,7 @@ app.use(express.json());
 app.use(rateLimiter);
 app.use(ipWhitelist);
 app.use(autenticar);
+app.use(logAuditoria);
 
 // Rotas
 app.use('/api/medicos', require('./routes/medicos'));
