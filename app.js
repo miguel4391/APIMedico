@@ -1,4 +1,3 @@
-// app.js
 require("dotenv").config();
 
 const express = require('express');
@@ -7,19 +6,56 @@ const ipWhitelist = require('./middleware/ipWhitelist');
 const autenticar = require('./middleware/auth');
 const rateLimiter = require('./middleware/rateLimiter');
 const logAuditoria = require('./middleware/logAuditoria');
+const logger = require('./utils/logger');
 
+// 1. PRIMEIRO: Inicializar a aplicação Express
 const app = express();
 
-app.set('trust proxy', 'loopback'); // se estiveres atrás de Nginx/proxy
-app.use(helmet());            // headers de segurança básicos
+app.set('trust proxy', 'loopback');
+
+// 2. SEGUNDO: Middleware de Logs HTTP (tem de vir LOGO A SEGUIR ao app)
+app.use((req, res, next) => {
+    const inicio = Date.now();
+
+    res.on('finish', () => {
+        const duracao = Date.now() - inicio;
+        const mensagem = `${req.method} ${req.originalUrl} ${res.statusCode} - ${duracao}ms`;
+
+        const dadosExtra = {
+            metodo: req.method,
+            url: req.originalUrl,
+            status: res.statusCode,
+            ip: req.ip || req.socket.remoteAddress,
+            duracaoMs: duracao
+        };
+
+        if (res.statusCode >= 500) {
+            logger.error(mensagem, dadosExtra);
+        } else if (res.statusCode >= 400) {
+            logger.warn(mensagem, dadosExtra);
+        } else {
+            logger.info(mensagem, dadosExtra);
+        }
+    });
+
+    next();
+});
+
+// 3. TERCEIRO: Outros Middlewares
+app.use(helmet());
 app.use(express.json());
 app.use(rateLimiter);
 app.use(ipWhitelist);
 app.use(autenticar);
 app.use(logAuditoria);
 
-// Rotas
+// 4. QUARTO: Registar Rotas
 app.use('/api/medicos', require('./routes/medicos'));
 app.use('/api/especialidades', require('./routes/especialidades'));
 
-app.listen(3000, () => console.log('API a correr na porta 3000'));
+// 5. QUINTO: Arranque do Servidor
+const PORT = process.env.PORT || 3000;
+
+app.listen(PORT, () => {
+    logger.info(`Servidor API Médico a correr na porta ${PORT}`);
+});

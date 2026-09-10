@@ -1,15 +1,16 @@
-// routes/medicos.js
 const express = require('express');
 const router = express.Router();
 const permitirEndpoint = require('../middleware/autorizacao');
 const db = require('../db/connection');
+const logger = require('../utils/logger'); // Importar logger
 
 router.get('/', permitirEndpoint('medicos'), async (req, res) => {
     try {
         const [rows] = await db.execute('SELECT cedula, nome, regiao FROM medicos LIMIT 100');
         res.json(rows);
     } catch (err) {
-        console.error(err);
+        // Usa o logger para registar a exceção de base de dados no ficheiro
+        logger.error('Erro na consulta de médicos na BD', { erro: err.message, stack: err.stack });
         res.status(500).json({ erro: 'Erro ao consultar dados' });
     }
 });
