@@ -6,7 +6,7 @@ const logger = require('../utils/logger'); // Importar logger
 
 router.get('/', permitirEndpoint('medicos'), async (req, res) => {
     try {
-        const [rows] = await db.execute('SELECT cedula, nome, regiao FROM medicos LIMIT 100');
+        const [rows] = await db.execute('SELECT * FROM medicos_lst;');
         res.json(rows);
     } catch (err) {
         // Usa o logger para registar a exceção de base de dados no ficheiro

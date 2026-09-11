@@ -37,3 +37,15 @@ curl https://apimedicos.ordemdosmedicos.pt/api/medicos -H "X-API-Key: 9c5942ea-f
 6. Caso o IP e a APIKey sejam autorizados a fazer requests ao endpoint solicitado, o pedido é feito à BD
 7. É enviado um json com a resposta obtida na query à BD
 
+
+
+## Adicionar Clientes da API
+1. Solicitar que o IP seja acrescentado na whitelist da Cloudflare
+2. Gerar uma chave guid
+3. Registar os dados do cliente na tabela clientes_api, tanto na BD OM como na OM_testes (Registar o nome, a apiKey(chave guid gerada) IP do cliente e endPoints permitidos)
+
+## Adicionar EndPoint
+1. Criar uma nova rota
+2. Adicionar na tabela clientes_api o registo dos clientes que podem aceder, tanto na BD OM como na OM_testes
+
+
