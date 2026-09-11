@@ -3,9 +3,9 @@ const router = express.Router();
 const permitirEndpoint = require('../middleware/autorizacao');
 const db = require('../db/connection');
 
-router.get('/', permitirEndpoint('especialidades'), async (req, res) => {
+router.get('/', permitirEndpoint('competencias'), async (req, res) => {
     try {
-        const [rows] = await db.execute('SELECT * FROM especialidades_ativas_lst;');
+        const [rows] = await db.execute('SELECT * FROM competencias_ativas_lst;');
         res.json(rows);
     } catch (err) {
         console.error(err);

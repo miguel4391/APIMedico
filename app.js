@@ -8,12 +8,12 @@ const rateLimiter = require('./middleware/rateLimiter');
 const logAuditoria = require('./middleware/logAuditoria');
 const logger = require('./utils/logger');
 
-// 1. PRIMEIRO: Inicializar a aplicação Express
+// 1. Inicializar a aplicação Express
 const app = express();
 
 app.set('trust proxy', 'loopback');
 
-// 2. SEGUNDO: Middleware de Logs HTTP (tem de vir LOGO A SEGUIR ao app)
+// 2. Middleware de Logs HTTP (tem de vir LOGO A SEGUIR ao app)
 app.use((req, res, next) => {
     const inicio = Date.now();
 
@@ -41,7 +41,7 @@ app.use((req, res, next) => {
     next();
 });
 
-// 3. TERCEIRO: Outros Middlewares
+// 3. Outros Middlewares
 app.use(helmet());
 app.use(express.json());
 app.use(rateLimiter);
@@ -49,11 +49,18 @@ app.use(ipWhitelist);
 app.use(autenticar);
 app.use(logAuditoria);
 
-// 4. QUARTO: Registar Rotas
+// 4. Rotas
 app.use('/api/medicos', require('./routes/medicos'));
+app.use('/api/medico', require('./routes/medicos'));
 app.use('/api/especialidades', require('./routes/especialidades'));
+app.use('/api/subespecialidades', require('./routes/subespecialidades'));
+app.use('/api/competencias', require('./routes/competencias'));
 
-// 5. QUINTO: Arranque do Servidor
+// Rota de teste para verificar se o servidor está a funcionar
+app.get('/', (req, res) => {
+    res.send('Servidor API Médico a correr!');
+});
+// 5. Arranque do Servidor
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {

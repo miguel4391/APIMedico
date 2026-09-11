@@ -46,6 +46,9 @@ curl https://apimedicos.ordemdosmedicos.pt/api/medicos -H "X-API-Key: 9c5942ea-f
 
 ## Adicionar EndPoint
 1. Criar uma nova rota
-2. Adicionar na tabela clientes_api o registo dos clientes que podem aceder, tanto na BD OM como na OM_testes
+2. Adicionar a nova rota em app.js na zona das rotas
+2. Criar a view pretendida no MySQL
+3. chamar a view do MySQL. 
+4. Adicionar na tabela clientes_api o registo dos clientes que podem aceder, tanto na BD OM como na OM_testes
 
 
